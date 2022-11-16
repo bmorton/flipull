@@ -32,6 +32,10 @@ var ReplaceCommand = &cli.Command{
 			Name:  "dry-run",
 			Usage: "output changed files to stdout instead of committing",
 		},
+		&cli.BoolFlag{
+			Name:  "regexp",
+			Usage: "enable regular expression mode for find string",
+		},
 		&cli.StringFlag{
 			Name:     "title",
 			Usage:    "title for pull request",
@@ -88,6 +92,7 @@ func replaceAction(ctx *cli.Context) error {
 	rep.Find = ctx.String("find")
 	rep.Replace = ctx.String("replace")
 	rep.Limit = ctx.Int("limit")
+	rep.Regexp = ctx.Bool("regexp")
 
 	return rep.Run(ctx.Context)
 }
