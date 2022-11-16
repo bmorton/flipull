@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/google/go-github/v48/github"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -18,6 +19,7 @@ type Replacer struct {
 	BaseBranch      string
 	TargetBranch    string
 	Path            string
+	Mode            string
 	Find            string
 	Replace         string
 	Limit           int
@@ -25,6 +27,7 @@ type Replacer struct {
 	Description     string
 	DryRun          bool
 	SkipPullRequest bool
+	Regexp          bool
 	gh              *github.Client
 }
 
@@ -173,7 +176,17 @@ func (r Replacer) generateContent(ctx context.Context) (string, error) {
 		return "", err
 	}
 
-	newContent := strings.Replace(content, r.Find, r.Replace, r.Limit)
+	if strings.TrimSpace(content) == "" {
+		return "", fmt.Errorf("file %s is empty", r.Path)
+	}
+
+	var newContent string
+	if r.Regexp {
+		sampleRegexp := regexp.MustCompile(r.Find)
+		newContent = sampleRegexp.ReplaceAllString(content, r.Replace)
+	} else {
+		newContent = strings.Replace(content, r.Find, r.Replace, r.Limit)
+	}
 
 	if newContent == content {
 		return "", ErrNoContentChange
