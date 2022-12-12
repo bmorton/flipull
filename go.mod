@@ -3,7 +3,7 @@ module github.com/bmorton/flipull
 go 1.19
 
 require (
-	github.com/google/go-github/v48 v48.1.0
+	github.com/google/go-github/v48 v48.2.0
 	github.com/urfave/cli/v2 v2.23.5
 	golang.org/x/oauth2 v0.2.0
 )
